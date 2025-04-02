@@ -1,0 +1,398 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.container {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: containerAppear 0.5s ease-out;
+}
+
+@keyframes containerAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    display: inline-block;
+    animation: titleGlow 2s ease-in-out infinite;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+    animation: titleLine 2s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%, 100% {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+}
+
+@keyframes titleLine {
+    0%, 100% {
+        transform: scaleX(0.5);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    color: #e0e0e0;
+    animation: statsAppear 0.5s ease-out 0.2s both;
+}
+
+@keyframes statsAppear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    animation: boardAppear 0.5s ease-out 0.4s both;
+}
+
+@keyframes boardAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.card {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    perspective: 1000px;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: scale(0.95);
+    backface-visibility: hidden;
+}
+
+.card.flipped img {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.card-front {
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+    transform: rotateY(180deg);
+}
+
+.card-back {
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    transform: rotateY(0);
+}
+
+.card:hover .card-back {
+    transform: scale(1.05) rotateY(0);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.card:hover .card-front {
+    transform: scale(1.05) rotateY(180deg);
+}
+
+.card.matched .card-front {
+    background: linear-gradient(45deg, #00b09b, #96c93d);
+    animation: matched 0.3s ease-in-out;
+    box-shadow: 0 0 20px rgba(0, 176, 155, 0.5);
+}
+
+.card.matched img {
+    animation: matchedImage 0.3s ease-in-out;
+}
+
+/* Add shake animation for mismatches */
+.card.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0) rotateY(180deg); }
+    25% { transform: translateX(-5px) rotateY(180deg); }
+    75% { transform: translateX(5px) rotateY(180deg); }
+}
+
+/* Enhance matched animation */
+@keyframes matched {
+    0% {
+        transform: scale(1) rotateY(180deg);
+    }
+    50% {
+        transform: scale(1.1) rotateY(180deg);
+        box-shadow: 0 0 30px rgba(0, 176, 155, 0.8);
+    }
+    100% {
+        transform: scale(1) rotateY(180deg);
+        box-shadow: 0 0 20px rgba(0, 176, 155, 0.5);
+    }
+}
+
+@keyframes matchedImage {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Add pulse effect to matched cards */
+.card.matched::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 15px;
+    background: linear-gradient(45deg, #00b09b, #96c93d);
+    opacity: 0.3;
+    animation: pulse 2s infinite;
+    z-index: -1;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+}
+
+/* Add hover effect for unmatched cards */
+.card:not(.matched):hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Add glow effect to matched cards */
+.card.matched {
+    animation: glow 2s infinite;
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 176, 155, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(0, 176, 155, 0.8);
+    }
+}
+
+.restart-btn {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    animation: buttonAppear 0.5s ease-out 0.6s both;
+}
+
+@keyframes buttonAppear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.restart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.restart-btn:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        width: 95%;
+        max-width: 500px;
+    }
+
+    .game-board {
+        gap: 0.4rem;
+    }
+
+    .card {
+        width: 80px;
+        height: 80px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .stats {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        width: 70px;
+        height: 70px;
+    }
+
+    .container {
+        padding: 0.8rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .stats {
+        font-size: 0.8rem;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card.matched::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+    animation: shine 1s infinite;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
