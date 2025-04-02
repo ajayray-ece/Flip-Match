@@ -123,7 +123,7 @@ h1::after {
     height: 100px;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     perspective: 1000px;
 }
@@ -172,13 +172,24 @@ h1::after {
     transform: rotateY(0);
 }
 
-.card:hover .card-back {
+/* Fix hover effects to work with flip */
+.card:not(.flipped):hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card:not(.flipped):hover .card-back {
     transform: scale(1.05) rotateY(0);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* Remove conflicting hover effects */
 .card:hover .card-front {
-    transform: scale(1.05) rotateY(180deg);
+    transform: rotateY(180deg);
+}
+
+.card:hover .card-back {
+    transform: rotateY(0);
 }
 
 .card.matched .card-front {
@@ -257,12 +268,6 @@ h1::after {
         transform: scale(1);
         opacity: 0.3;
     }
-}
-
-/* Add hover effect for unmatched cards */
-.card:not(.matched):hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Add glow effect to matched cards */

@@ -12,6 +12,7 @@ class MemoryGame {
         this.timer = 0;
         this.timerInterval = null;
         this.isPlaying = false;
+        this.canFlip = true;
         
         this.initializeGame();
         this.setupEventListeners();
@@ -26,6 +27,7 @@ class MemoryGame {
         this.movesDisplay.textContent = '0';
         this.timerDisplay.textContent = '0:00';
         this.stopTimer();
+        this.canFlip = true;
         
         // Create card pairs (8 pairs = 16 cards)
         const cardValues = Array.from({ length: 8 }, (_, i) => i + 1);
@@ -79,7 +81,8 @@ class MemoryGame {
     setupEventListeners() {
         this.gameBoard.addEventListener('click', (e) => {
             const card = e.target.closest('.card');
-            if (!card || this.flippedCards.length >= 2 || this.flippedCards.includes(card) || card.classList.contains('matched')) {
+            if (!card || !this.canFlip || this.flippedCards.length >= 2 || 
+                this.flippedCards.includes(card) || card.classList.contains('matched')) {
                 return;
             }
             this.flipCard(card);
@@ -91,27 +94,26 @@ class MemoryGame {
     }
 
     flipCard(card) {
+        // Prevent flipping more cards while checking for matches
+        if (this.flippedCards.length >= 2) return;
+        
         // Add flip animation class
         card.classList.add('flipped');
         
         // Add to flipped cards array
         this.flippedCards.push(card);
         
-        // Play flip sound effect
-        this.playFlipSound();
-        
         // Check for match if two cards are flipped
         if (this.flippedCards.length === 2) {
+            this.canFlip = false; // Prevent flipping more cards while checking
             this.moves++;
             this.movesDisplay.textContent = this.moves;
-            this.checkMatch();
+            
+            // Wait for flip animation to complete before checking match
+            setTimeout(() => {
+                this.checkMatch();
+            }, 300);
         }
-    }
-
-    playFlipSound() {
-        const audio = new Audio('flip.mp3');
-        audio.volume = 0.3;
-        audio.play().catch(() => {}); // Ignore errors if sound is blocked
     }
 
     checkMatch() {
@@ -130,21 +132,13 @@ class MemoryGame {
         card1.classList.add('matched');
         card2.classList.add('matched');
         
-        // Play match sound effect
-        this.playMatchSound();
-        
         this.matches++;
         this.flippedCards = [];
+        this.canFlip = true; // Allow flipping again
 
         if (this.matches === this.cards.length / 2) {
             this.gameComplete();
         }
-    }
-
-    playMatchSound() {
-        const audio = new Audio('match.mp3');
-        audio.volume = 0.3;
-        audio.play().catch(() => {}); // Ignore errors if sound is blocked
     }
 
     handleMismatch(card1, card2) {
@@ -156,6 +150,7 @@ class MemoryGame {
             card1.classList.remove('flipped', 'shake');
             card2.classList.remove('flipped', 'shake');
             this.flippedCards = [];
+            this.canFlip = true; // Allow flipping again
         }, 1000);
     }
 
@@ -179,18 +174,9 @@ class MemoryGame {
         this.stopTimer();
         this.isPlaying = false;
         
-        // Play victory sound
-        this.playVictorySound();
-        
         setTimeout(() => {
             alert(`🎉 Congratulations! You completed the game in ${this.moves} moves and ${this.timerDisplay.textContent} time!`);
         }, 500);
-    }
-
-    playVictorySound() {
-        const audio = new Audio('victory.mp3');
-        audio.volume = 0.3;
-        audio.play().catch(() => {}); // Ignore errors if sound is blocked
     }
 }
 
